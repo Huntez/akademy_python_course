@@ -1,0 +1,5 @@
+Symbols : 364
+Strings : 7
+Vowels : 134
+Consontans : 167
+Digits : 3
