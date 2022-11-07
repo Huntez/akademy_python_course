@@ -42,8 +42,8 @@ from random import randint
 
 # Third
 
-c = 6
-d = 6
+#c = 6
+#d = 6
 
 # for a in range(1, 5):
 #     print(" " * int(d / a) + "*" * int(a - 1), "*" * int(a / d))
