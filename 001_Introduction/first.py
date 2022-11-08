@@ -26,4 +26,4 @@
 # # другого розряду. У нашому випадку це виглядатиме так:
 
 number = int(input('Enter number : '))
-print(number // 10, number % 10)
+print("result :", number // 10, "," , number % 10)
