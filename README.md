@@ -169,17 +169,17 @@ Different sorting algorythms
 <details><summary>Example</summary>
 <p>
     
-optimized bubble sort
+__Optimized bubble sort__
 
 ```python
 
-# list = [5,7,4,3,8,2]
-# for i in range(len(list) - 2):
-#     for j in range(len(list) - 1 - i):
-#         if list[j] > list[j+1]:
-#             list[j], list[j+1] = list[j+1], list[j]
+list = [5,7,4,3,8,2]
+for i in range(len(list) - 2):
+    for j in range(len(list) - 1 - i):
+         if list[j] > list[j+1]:
+            list[j], list[j+1] = list[j+1], list[j]
 
-# print(list)
+print(list)
 ```
 
 </p>
