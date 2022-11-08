@@ -63,7 +63,7 @@ else:
 </p>
 </details>
 
-## Module 004 Loop Statements
+## Module 004 - Loop Statements
 Advanced working with loops(for, while)
 
 <details><summary>Example</summary>
@@ -91,6 +91,76 @@ while(choice != 7):
             if a == "0":
                 count += 1
         print("Null count :", count)
+```
+
+</p>
+</details>
+
+## Module 005 - Arrays
+Working with different data types 
+
+<details><summary>Example</summary>
+<p>
+
+__Working with nested dictionaries with using a loops__
+    
+```python
+uenter, dict_book= 0, dict()
+data = ("Genre", "Date", "Page numbers", "Publisher")
+
+while(uenter != 7):
+    uenter = int(input("1 - add, 2 - pop, 3 - find, 4 - change : "))
+    if uenter == 1:
+        enter = input("Enter a author : ")
+        while True:
+            benter = input("Enter book name : ")
+            if enter not in dict_book:
+                dict_book[enter] = {}
+            if benter not in dict_book[enter]:
+                dict_book[enter][benter] = {}; break
+            else:
+                print("This name is busy!")
+        for a in data:
+            dict_book[enter][benter][a] = input("Enter " + a + " : ")
+    elif uenter == 2:
+        enter = input("Enter a author : ")
+        if enter not in dict_book:
+            print("Dict dont have this author!")
+        else:
+            choice = int(input("1 - some in book, 2 - book , 3 - all : "))
+            if choice == 1:
+                print(*data, sep=", ", end="")
+                senter = input(" : ")
+                dict_book[enter][input("Enter book name : ")][senter] = ""
+            elif choice == 2:
+                #benter = input("Enter book name : ")
+                del dict_book[enter][input("Enter book name : ")]
+            elif choice == 3:
+                dict_book.pop(enter)
+    elif uenter == 3:
+        enter = input("Enter a author : ")
+        if enter not in dict_book:
+            print("Dict dont have this author!")
+        else:
+            choice = int(input("1 - some, 2 - all : "))
+            if choice == 1:
+                benter = input("Enter book name : ")
+                for a in dict_book[enter][benter]:
+                    print(a, ":", dict_book[enter][benter][a])
+            elif choice == 2:
+                for a, b in dict_book[enter].items():
+                    print("Book :", a)
+                    for i in b:
+                        print(i, ":", b[i])
+    elif uenter == 4:
+        enter = input("Enter a name : ")
+        if enter not in dict_book:
+            print("Dict dont have this author!")
+        else:
+            benter = input("Enter book name : ")
+            print(*data, sep=", ", end="")
+            senter = input(" : ")
+            dict_book[enter][benter][senter] = input("Enter " + senter + " : ")
 ```
 
 </p>
