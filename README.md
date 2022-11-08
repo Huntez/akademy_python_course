@@ -1,8 +1,5 @@
 # __Python files from akademy course__
 
-## Warning!
-all written code is outdated and does not reflect real skills
-
 ## Support
 Testing on python __3.10.8__ with arch linux
 
