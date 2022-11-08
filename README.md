@@ -30,7 +30,6 @@ Working with different data types
 ```python
 size_of_file = int(input("Enter a size_of_file : "))
 speed = int(input("Enter a connection speed : "))
-#schoice = int(input("1 - h, 2 - m, 3 - s : "))
 time = (size_of_file * 1000) / (speed / 800000)
 print(time)
 ```
