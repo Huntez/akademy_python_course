@@ -1,5 +1,8 @@
 # __Python files from akademy course__
 
+## Warning!
+all written code is outdated and does not reflect real skills
+
 ## Support
 Testing on python __3.10.8__ with arch linux
 
@@ -37,7 +40,7 @@ print(time)
 </p>
 </details>
 
-## 003 - Conditional Statements
+## Module 003 - Conditional Statements
 Working with if else conditional and someting with loops
 
 <details><summary>Example</summary>
@@ -60,3 +63,34 @@ else:
 </p>
 </details>
 
+## Module 004 Loop Statements
+Advanced working with loops(for, while)
+
+<details><summary>Example</summary>
+<p>
+```python
+enumber = (input("Enter a number : "))
+choice, count, summ, a = 0, 0, 0, 0
+
+while(choice != 7):
+    choice = int(input("1 - c, 2 - s & avg, 3 - cnull : "))
+    if choice == 1:
+        for a in enumber:
+            count += 1
+        print("Count :", count)
+    elif choice == 2:
+        count = 0
+        for a in enumber:
+            summ += int(a)
+            count += 1
+        print("Summ :", summ, "Avg", summ / count)
+    elif choice == 3:
+        count = 0
+        for a in enumber:
+            if a == "0":
+                count += 1
+        print("Null count :", count)
+```
+
+</p>
+</details>
