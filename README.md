@@ -68,6 +68,7 @@ Advanced working with loops(for, while)
 
 <details><summary>Example</summary>
 <p>
+
 ```python
 enumber = (input("Enter a number : "))
 choice, count, summ, a = 0, 0, 0, 0
