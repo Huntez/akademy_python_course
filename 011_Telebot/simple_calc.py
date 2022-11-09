@@ -1,12 +1,9 @@
 import telebot
+import connections
 
-config = {
-    'name': 'callmynamemrfreeman_bot',
-    'token': '5698387219:AAHXi4KGvpMm_JF-nrWBXWKGsu7mURkMl9U'
-}
-
-bot = telebot.TeleBot(config['token'])
+bot = telebot.TeleBot(connections.token)
 @bot.message_handler(content_types=['text'])
+
 def get_text(message):
     alist = ["+", "-", "*", "/"]
     svar = [i for i in message.text if i in alist]
