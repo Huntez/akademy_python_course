@@ -279,10 +279,10 @@ __Login into MYSQL database and authorization algorithm__
 import pymysql
 try:
     connection = pymysql.connect(
-        host="localhost",
-        port=3306,
-        user="root",
-        password="2255",
+        host="",
+        port=,
+        user="",
+        password="",
         database="koshikDB",
         cursorclass=pymysql.cursors.DictCursor)
     print("Okay!")
