@@ -317,14 +317,11 @@ __simpe calculator for telegram__
 
 ```python
 import telebot
+import connections
 
-config = {
-    'name': '',
-    'token': ''
-}
-
-bot = telebot.TeleBot(config['token'])
+bot = telebot.TeleBot(connections.token)
 @bot.message_handler(content_types=['text'])
+
 def get_text(message):
     alist = ["+", "-", "*", "/"]
     svar = [i for i in message.text if i in alist]
