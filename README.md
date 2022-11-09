@@ -184,3 +184,126 @@ print(list)
 
 </p>
 </details>
+
+## Module 007 - Functions
+Working with functions
+
+<details><summary>Example</summary>
+<p>
+    
+__Number pow__
+
+```python
+def spow(a, b):
+    slpow = []
+    for i in a:
+        ssum = 1
+        for j in range(b):
+            ssum *= i
+        slpow.append(ssum)
+    return slpow
+
+flist = [randint(1, 10) for i in range(5)]; print(flist)
+print("Pow res : ", spow(flist, int(input("Enter a pow : "))))
+
+print(list)
+```
+
+</p>
+</details>
+
+## Module 008 - Files
+Working with files
+
+<details><summary>Example</summary>
+<p>
+    
+__Word replacer__
+
+```python
+file = open(os.path.join("homework4", "text1.txt"), "r")
+line = file.read(); line.replace("\n", ""); print(line)
+
+ureplace = input("Enter a word to replace : ")
+uword = input("Enter a word : ")
+
+print(line.replace(ureplace, uword))
+
+file.close()
+
+print(list)
+```
+
+</p>
+</details>
+
+## Module 009 - OOP
+Working with OOP and Exceptions, Raise etd...
+
+<details><summary>Example</summary>
+<p>
+    
+__Sun angle calculation__
+
+```python
+class SundontSee(Exception):
+    pass
+
+while True:
+    try:
+        time = input("Time : ")
+        stime = [int(i) for i in time.split(":")]
+    except(ValueError):
+        print("Kva")
+    else:
+        break
+    
+if stime[0] >= 18 and stime[0] <= 24 or stime[0] >= 0 and stime[0] < 6:
+    raise SundontSee("I dont see sun!")
+else:
+    print(((stime[0] - 6) * 15) + stime[1] * 0.25)
+```
+
+</p>
+</details>
+
+## Module 010 - PYMSQL
+Working with MYSQL database, making menus etc...
+
+<details><summary>Example</summary>
+<p>
+    
+__Login into MYSQL database and authorization algorithm__
+
+```python
+import pymysql
+try:
+    connection = pymysql.connect(
+        host="localhost",
+        port=3306,
+        user="root",
+        password="2255",
+        database="koshikDB",
+        cursorclass=pymysql.cursors.DictCursor)
+    print("Okay!")
+    with connection.cursor() as cursor:
+        while True:
+            try:
+                username = input("Enter a username : ")
+                password = input("Enter a password : ")
+            except Exception as error:
+                print(error)
+            cursor.execute(f"select login from koshikDB.Logins where username = '{username}'")
+            password_check = cursor.fetchall()
+            try:
+                if password_check[0].get('login') == password:
+                    print("Okay!"); break
+                else:
+                    print("Bad password!")
+            except:
+                print("Incorrect user")
+```
+
+</p>
+</details>
+
