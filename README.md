@@ -313,7 +313,7 @@ Working with pyTelegramBotAPI
 <details><summary>Example</summary>
 <p>
     
-__simpe calculator for telegram__
+__Simple calculator for telegram__
 
 ```python
 import telebot
