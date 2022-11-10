@@ -29,11 +29,11 @@ def statistics(message):
     for i in message.text.replace(" ", "").lower():
         if i in vowels:
             gcount += 1
-        if i in consonants:
+        elif i in consonants:
             ngcount +=1
-        if i in prlist:
+        elif i in prlist:
             pcount +=1
-        if i.isdigit():
+        elif i.isdigit():
             if int(i) % 2 == 0:
                 chcount += 1
             else:
