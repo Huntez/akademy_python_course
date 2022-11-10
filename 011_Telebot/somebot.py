@@ -2,7 +2,7 @@ import telebot
 import connections
 
 bot = telebot.TeleBot(connections.token)
-@bot.message_handler(commands=['calc', 'happy_ticket'])
+@bot.message_handler(commands=['calc', 'happy_ticket', 'start'])
 
 def get_text(message):
     if message.text == "/calc":
@@ -20,8 +20,8 @@ def count_words(message):
 
 def happy_ticket(message):
     ticket = message.text
-    first = [int(i) for i in ticket[1:len(ticket)//2]]
-    second = [int(i) for i in ticket[(len(ticket)//2) + 1:]]
+    first = [int(i) for i in ticket[:len(ticket)//2]]
+    second = [int(i) for i in ticket[(len(ticket)//2):]]
     if sum(first) == sum(second):
         bot.send_message(message.chat.id, "Ticket - " + ticket + " is happy!")
     else:
