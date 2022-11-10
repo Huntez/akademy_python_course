@@ -25,6 +25,7 @@ def statistics(message):
     'n', 'p', 'q', 's', 't', 'v', 'x', 'z', 'h','r', 'w', 'y']
     prlist = [',', '!', '?', ':', '-', '"', "'"]
     chcount, nchcount, gcount, ngcount, pcount = 0, 0, 0, 0, 0
+    
     wcount = len([i for i in message.text.split(" ")])
     for i in message.text.replace(" ", "").lower():
         if i in vowels:
