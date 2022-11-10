@@ -20,7 +20,9 @@ def count_words(message):
 
 def happy_ticket(message):
     ticket = message.text
-    if sum(ticket[1:len(ticket)//2]) == sum(ticket[(len(ticket)//2 + 1):]):
+    first = [int(i) for i in ticket[1:len(ticket)//2]]
+    second = [int(i) for i in ticket[(len(ticket)//2) + 1:]]
+    if sum(first) == sum(second):
         bot.send_message(message.chat.id, "Ticket - " + ticket + " is happy!")
     else:
         bot.send_message(message.chat.id, "Ticket - " + ticket + " is unhappy..")
