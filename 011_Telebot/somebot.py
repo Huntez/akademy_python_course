@@ -21,23 +21,32 @@ def get_text(message):
 
 def statistics(message):
     vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+    consonants = ['b', 'c', 'd', 'f', 'g', 'j', 'k', 'l', 'm', 
+    'n', 'p', 'q', 's', 't', 'v', 'x', 'z', 'h','r', 'w', 'y']
     prlist = [',', '!', '?', ':', '-', '"', "'"]
-    gcount, ngcount, pcount = 0, 0, 0
+    chcount, nchcount, gcount, ngcount, pcount = 0, 0, 0, 0, 0
     wcount = len([i for i in message.text.split(" ")])
-    for i in message.text.replace(" ", ""):
+    for i in message.text.replace(" ", "").lower():
         if i in vowels:
-            gcount += 1 # vowels counter
-        if i not in vowels and i not in prlist:
+            gcount += 1
+        if i in consonants:
             ngcount +=1
         if i in prlist:
             pcount +=1
+        if i.isdigit():
+            if int(i) % 2 == 0:
+                chcount += 1
+            else:
+                nchcount += 1
 
     file = open("stats.txt", "w")
     file.write("Symbol counter : " + str(len(message.text)) + "\n")
     file.write("Word counter : " + str(wcount) + "\n")
     file.write("Vowels counter : " + str(gcount) + "\n")
     file.write("Consonants counter : " + str(ngcount) + "\n")
-    file.write("Punctuation symbol counter : " + str(pcount))
+    file.write("Punctuation symbol counter : " + str(pcount) + "\n")
+    file.write("Even counter : " + str(chcount) + "\n")
+    file.write("Odd counter : " + str(nchcount))
     file.close()
 
     file = open("stats.txt", "rb")
