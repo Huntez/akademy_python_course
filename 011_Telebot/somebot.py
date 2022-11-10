@@ -1,8 +1,9 @@
 import telebot
+import os.path
 import connections
 
 bot = telebot.TeleBot(connections.token)
-@bot.message_handler(commands=['calc', 'happy_ticket', 'start'])
+@bot.message_handler(commands=['calc', 'happy_ticket', 'count_words', 'statistics'])
 
 def get_text(message):
     if message.text == "/calc":
@@ -11,6 +12,37 @@ def get_text(message):
     elif message.text == "/happy_ticket":
         somevar = bot.send_message(message.chat.id, "Enter a ticket : ")
         bot.register_next_step_handler(somevar, happy_ticket)
+    elif message.text == "/count_words":
+        somevar = bot.send_message(message.chat.id, "Enter a text : ")
+        bot.register_next_step_handler(somevar, count_words)
+    elif message.text == "/statistics":
+        somevar = bot.send_message(message.chat.id, "Enter a text : ")
+        bot.register_next_step_handler(somevar, statistics)
+
+def statistics(message):
+    vowels = ['a', 'e', 'i', 'o', 'u', 'y']
+    prlist = [',', '!', '?', ':', '-', '"', "'"]
+    gcount, ngcount, pcount = 0, 0, 0
+    wcount = len([i for i in message.text.split(" ")])
+    for i in message.text.replace(" ", ""):
+        if i in vowels:
+            gcount += 1 # vowels counter
+        if i not in vowels and i not in prlist:
+            ngcount +=1
+        if i in prlist:
+            pcount +=1
+
+    file = open("stats.txt", "w")
+    file.write("Symbol counter : " + str(len(message.text)) + "\n")
+    file.write("Word counter : " + str(wcount) + "\n")
+    file.write("Vowels counter : " + str(gcount) + "\n")
+    file.write("Consonants counter : " + str(ngcount) + "\n")
+    file.write("Punctuation symbol counter : " + str(pcount))
+    file.close()
+
+    file = open("stats.txt", "rb")
+    bot.send_document(message.chat.id, file)
+    file.close()
 
 def count_words(message):
     count = 0

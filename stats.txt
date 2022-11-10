@@ -1,0 +1,5 @@
+Symbol counter : 1109
+Word counter : 170
+Vowels counter : 402
+Consonants counter : 515
+Punctuation symbol counter : 23
