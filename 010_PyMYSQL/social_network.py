@@ -6,7 +6,7 @@ try:
         user="root",
         password="2255",
         database="Social_network",
-        cursorclass=pymysql.cursors.DictCursor)
+        cursorclass=pymysql.cursors.DictCursorм )
     print("Okay!")
     with connection.cursor() as cursor:
         while True:
