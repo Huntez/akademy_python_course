@@ -52,7 +52,7 @@ try:
                             values('{id}', '{publication}')''')
                         elif uenter == 2:
                             friend = input("Enter a friend : ")
-                            cursor.execute(f'''insert friends (id, friends)
+                            cursor.execute(f'''insert friends (id, friend)
                             values('{id}', '{friend}')''')                            
                     else:
                         print("User dont exist!")   
@@ -96,7 +96,7 @@ try:
                     if uenter == 1:
                         cursor.execute(f"select * from users where id = '{id}'")
                     elif uenter == 2:
-                        cursor.execute(f"select friends from friends where id = '{id}'")
+                        cursor.execute(f"select friend from friends where id = '{id}'")
                     elif uenter == 3:
                         cursor.execute(f"select publication from publications where id = '{id}'")
                     result = cursor.fetchall()
