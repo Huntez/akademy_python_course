@@ -28,6 +28,11 @@
 --  password varchar(30) not null
 -- );
 
+-- create table deleted_user_id
+-- (
+-- 	id int primary key not null
+-- );
+
 -- insert logins(username, password)
 -- values
 -- ("User", "12345"),

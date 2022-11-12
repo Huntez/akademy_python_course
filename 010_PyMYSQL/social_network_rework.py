@@ -1,10 +1,11 @@
 import pymysql
+import connections
 try:
     connection = pymysql.connect(
-        host="localhost",
-        port=3306,
-        user="root",
-        password="2255",
+        host=connections.host,
+        port=connections.port,
+        user=connections.user,
+        password=connections.password,
         database="Social_Network_Rework",
         cursorclass=pymysql.cursors.DictCursor)
     print("Okay!")
@@ -34,13 +35,23 @@ try:
             elif enter == 2: # adding user to DB
                 uenter = int(input("1 - add user, 2 - publications or friends : "))
                 if uenter == 1:
+                    cursor.execute("select max(id) from users")
+                    max_id = cursor.fetchall()
+                    cursor.execute("select count(*) from deleted_user_id")
+                    if cursor.fetchall()[0]['count(*)'] >= 1:
+                        cursor.execute("select min(id) from deleted_user_id")
+                        id = cursor.fetchall()[0]['min(id)']
+                        cursor.execute(f"delete from deleted_user_id where id = '{id}'")
+                    elif max_id[0]['max(id)'] == None:
+                        id = 1
+                    else:
+                        id = int(max_id[0]['max(id)']) + 1
                     name = input("Name : ")
                     surname = input("Surname : ")
                     info = input("Info : ")
-                    cursor.execute(f'''insert users (name, surname, info)
-                    values ('{name}', '{surname}', '{info}')''')
-                    cursor.execute("select max(id) from users")
-                    print("User id -", cursor.fetchall()[0]['max(id)'])
+                    cursor.execute(f'''insert users (id, name, surname, info)
+                    values ('{id}', '{name}', '{surname}', '{info}')''')
+                    print("User id -", id)
                 elif uenter == 2:
                     id = int(input("Enter a user id : "))
                     cursor.execute(f"select count(id) from users where id = '{id}'")
@@ -57,19 +68,23 @@ try:
                     else:
                         print("User dont exist!")   
                 connection.commit()
-            elif enter == 3:
-                cursor.execute("select * from users")
-                for i in cursor.fetchall():
-                    print(i['id'], "-", i['name'], i['surname'])
+            elif enter == 3: # deleting
                 uenter = int(input("Enter a user id : "))
-                cursor.execute(f"delete from users where id = {uenter}")
-                cursor.execute(f"delete from publications where id = '{uenter}'")
-                cursor.execute(f"delete from friends where id = '{uenter}'")
-                connection.commit()
+                cursor.execute(f"select count(id) from users where id = '{uenter}'")
+                if cursor.fetchall()[0]['count(id)'] == 1:
+                    cursor.execute(f"insert deleted_user_id(id) values('{uenter}')")
+                    cursor.execute("select * from users")
+                    cursor.execute(f"delete from users where id = {uenter}")
+                    cursor.execute(f"delete from publications where id = '{uenter}'")
+                    cursor.execute(f"delete from friends where id = '{uenter}'")
+                    connection.commit()
+                else:
+                    print("User dont exist!")   
             elif enter == 4:
-                cursor.execute(f"delete from users")
-                cursor.execute(f"delete from publications")
-                cursor.execute(f"delete from friends")
+                cursor.execute("delete from users")
+                cursor.execute("delete from publications")
+                cursor.execute("delete from friends")
+                cursor.execute("delete from deleted_user_id")
                 connection.commit()
                 print("Okay!")
             elif enter == 5:
