@@ -45,7 +45,7 @@ try:
                     elif max_id[0]['max(id)'] == None:
                         id = 1
                     else:
-                        id = int(max_id[0]['max(id)']) + 1
+                        id = max_id[0]['max(id)'] + 1
                     name = input("Name : ")
                     surname = input("Surname : ")
                     info = input("Info : ")
