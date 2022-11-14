@@ -33,7 +33,7 @@ def get_text(message):
             somevar = bot.send_message(message.chat.id, "Enter a text : ")
             bot.register_next_step_handler(somevar, statistics)
     else:
-        bot.send_message(message.chat.id, "fuck you")
+        bot.send_message(message.chat.id, "Log in first!")
 
 def login_to_db(message):
     user_and_password = message.text.replace(" ", "").split(",")
