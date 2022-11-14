@@ -18,7 +18,11 @@ def get_text(message):
         else:
             bot.send_message(message.chat.id, "You already authorized!")
     elif message.text == "/registration":
-        pass
+        if authorization_check == False:
+            bot.send_message(message.chat.id, "user, password : ")
+            bot.register_next_step_handler(message, registration)
+        else:
+            bot.send_message(message.chat.id, "You already authorized!")
     elif authorization_check == True:
         if message.text == "/calc":
             bot.send_message(message.chat.id, "Enter a action : ")
@@ -34,6 +38,15 @@ def get_text(message):
             bot.register_next_step_handler(somevar, statistics)
     else:
         bot.send_message(message.chat.id, "Log in first!")
+
+def registration(message):
+    user_and_password = message.text.replace(" ", "").split(",")
+    auth = login_registration.authorization(user_and_password[0], 
+    user_and_password[1])
+    if auth.registration_to_db() == True:
+        bot.send_message(message.chat.id, "Account created!")
+    else:
+        bot.send_message(message.chat.id, "User already exist!")
 
 def login_to_db(message):
     user_and_password = message.text.replace(" ", "").split(",")
