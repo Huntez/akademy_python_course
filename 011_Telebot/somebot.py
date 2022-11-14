@@ -1,23 +1,50 @@
 import telebot
 import os.path
 import connections
+import login_registration
+
+authorization_check = False
 
 bot = telebot.TeleBot(connections.token)
-@bot.message_handler(commands=['calc', 'happy_ticket', 'count_words', 'statistics'])
+@bot.message_handler(commands=['calc', 'happy_ticket', 
+                            'count_words', 'statistics', 
+                            'login', 'registration'])
 
 def get_text(message):
-    if message.text == "/calc":
-        somevar = bot.send_message(message.chat.id, "Enter a action : ")
-        bot.register_next_step_handler(somevar, calc)
-    elif message.text == "/happy_ticket":
-        somevar = bot.send_message(message.chat.id, "Enter a ticket : ")
-        bot.register_next_step_handler(somevar, happy_ticket)
-    elif message.text == "/count_words":
-        somevar = bot.send_message(message.chat.id, "Enter a text : ")
-        bot.register_next_step_handler(somevar, count_words)
-    elif message.text == "/statistics":
-        somevar = bot.send_message(message.chat.id, "Enter a text : ")
-        bot.register_next_step_handler(somevar, statistics)
+    if message.text == "/login":
+        if authorization_check == False:
+            bot.send_message(message.chat.id, "user, password : ")
+            bot.register_next_step_handler(message, login_to_db)
+        else:
+            bot.send_message(message.chat.id, "You already authorized!")
+    elif message.text == "/registration":
+        pass
+    elif authorization_check == True:
+        if message.text == "/calc":
+            bot.send_message(message.chat.id, "Enter a action : ")
+            bot.register_next_step_handler(message, calc)
+        elif message.text == "/happy_ticket":
+            somevar = bot.send_message(message.chat.id, "Enter a ticket : ")
+            bot.register_next_step_handler(somevar, happy_ticket)
+        elif message.text == "/count_words":
+            somevar = bot.send_message(message.chat.id, "Enter a text : ")
+            bot.register_next_step_handler(somevar, count_words)
+        elif message.text == "/statistics":
+            somevar = bot.send_message(message.chat.id, "Enter a text : ")
+            bot.register_next_step_handler(somevar, statistics)
+    else:
+        bot.send_message(message.chat.id, "fuck you")
+
+def login_to_db(message):
+    user_and_password = message.text.replace(" ", "").split(",")
+    auth = login_registration.authorization(user_and_password[0], 
+    user_and_password[1])
+    if auth.login_to_db() ==  True:
+        global authorization_check
+        authorization_check = True
+        bot.send_message(message.chat.id, "Login success!")
+    else:
+        bot.send_message(message.chat.id, "Login failure!")        
 
 def statistics(message):
     vowels = ['a', 'e', 'i', 'o', 'u', 'y']
