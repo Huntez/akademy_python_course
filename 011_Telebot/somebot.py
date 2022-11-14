@@ -12,18 +12,18 @@ bot = telebot.TeleBot(connections.token)
 
 def get_text(message):
     if message.text == "/login":
-        if authorization_check == False:
+        if authorization_check:
             bot.send_message(message.chat.id, "user, password : ")
             bot.register_next_step_handler(message, login_to_db)
         else:
             bot.send_message(message.chat.id, "You already authorized!")
     elif message.text == "/registration":
-        if authorization_check == False:
+        if not authorization_check:
             bot.send_message(message.chat.id, "user, password : ")
             bot.register_next_step_handler(message, registration)
         else:
             bot.send_message(message.chat.id, "You already authorized!")
-    elif authorization_check == True:
+    elif authorization_check:
         if message.text == "/calc":
             bot.send_message(message.chat.id, "Enter a action : ")
             bot.register_next_step_handler(message, calc)
@@ -43,7 +43,7 @@ def registration(message):
     user_and_password = message.text.replace(" ", "").split(",")
     auth = login_registration.authorization(user_and_password[0], 
     user_and_password[1])
-    if auth.registration_to_db() == True:
+    if auth.registration_to_db():
         bot.send_message(message.chat.id, "Account created!")
     else:
         bot.send_message(message.chat.id, "User already exist!")
@@ -52,7 +52,7 @@ def login_to_db(message):
     user_and_password = message.text.replace(" ", "").split(",")
     auth = login_registration.authorization(user_and_password[0], 
     user_and_password[1])
-    if auth.login_to_db() ==  True:
+    if auth.login_to_db():
         global authorization_check
         authorization_check = True
         bot.send_message(message.chat.id, "Login success!")
