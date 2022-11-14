@@ -10,7 +10,7 @@ bot = telebot.TeleBot(connections.token)
                             'count_words', 'statistics', 
                             'login', 'registration'])
 
-def get_text(message):
+def command_checker(message):
     if message.text == "/login":
         if authorization_check:
             bot.send_message(message.chat.id, "user, password : ")
@@ -35,7 +35,7 @@ def get_text(message):
             bot.register_next_step_handler(somevar, count_words)
         elif message.text == "/statistics":
             somevar = bot.send_message(message.chat.id, "Enter a text : ")
-            bot.register_next_step_handler(somevar, statistics)
+            bot.register_next_step_handler(somevar, show_statistics)
     else:
         bot.send_message(message.chat.id, "Log in first!")
 
@@ -59,35 +59,35 @@ def login_to_db(message):
     else:
         bot.send_message(message.chat.id, "Login failure!")        
 
-def statistics(message):
+def show_statistics(message):
     vowels = ['a', 'e', 'i', 'o', 'u', 'y']
     consonants = ['b', 'c', 'd', 'f', 'g', 'j', 'k', 'l', 'm', 
     'n', 'p', 'q', 's', 't', 'v', 'x', 'z', 'h','r', 'w', 'y']
     prlist = [',', '!', '?', ':', '-', '"', "'"]
-    chcount, nchcount, gcount, ngcount, pcount = 0, 0, 0, 0, 0
+    even_count, odd_count, vowels_count, conso_count, prcount = 0, 0, 0, 0, 0
     
-    wcount = len([i for i in message.text.split(" ")])
+    word_count = len([i for i in message.text.split(" ")])
     for i in message.text.replace(" ", "").lower():
         if i in vowels:
-            gcount += 1
+            vowels_count += 1
         elif i in consonants:
-            ngcount +=1
+            conso_count +=1
         elif i in prlist:
-            pcount +=1
+            prcount +=1
         elif i.isdigit():
             if int(i) % 2 == 0:
-                chcount += 1
+                even_count += 1
             else:
-                nchcount += 1
+                odd_count += 1
 
     file = open("stats.txt", "w")
     file.write("Symbol counter : " + str(len(message.text)) + "\n")
-    file.write("Word counter : " + str(wcount) + "\n")
-    file.write("Vowels counter : " + str(gcount) + "\n")
-    file.write("Consonants counter : " + str(ngcount) + "\n")
-    file.write("Punctuation symbol counter : " + str(pcount) + "\n")
-    file.write("Even counter : " + str(chcount) + "\n")
-    file.write("Odd counter : " + str(nchcount))
+    file.write("Word counter : " + str(word_count) + "\n")
+    file.write("Vowels counter : " + str(vowels_count) + "\n")
+    file.write("Consonants counter : " + str(conso_count) + "\n")
+    file.write("Punctuation symbol counter : " + str(prcount) + "\n")
+    file.write("Even counter : " + str(even_count) + "\n")
+    file.write("Odd counter : " + str(odd_count))
     file.close()
 
     file = open("stats.txt", "rb")

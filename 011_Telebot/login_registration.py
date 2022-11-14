@@ -1,13 +1,16 @@
 import connections
 import pymysql
 
-connection = pymysql.connect(
-    host=connections.host,
-    port=connections.port,
-    user=connections.user,
-    password=connections.password,
-    database="Telebot",
-    cursorclass=pymysql.cursors.DictCursor)
+try:
+    connection = pymysql.connect(
+        host=connections.host,
+        port=connections.port,
+        user=connections.user,
+        password=connections.password,
+        database="Telebot",
+        cursorclass=pymysql.cursors.DictCursor)
+except Exception as error:
+    print(error)
 
 class authorization:
     def __init__(self, user, password):
