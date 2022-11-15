@@ -50,7 +50,7 @@ def command_checker(message):
             bot.register_next_step_handler(somevar, count_words)
         if message.text == "/statistics":
             somevar = bot.send_message(message.chat.id, "Enter a text : ")
-            bot.register_next_step_handler(somevar, show_statistics)
+            bot.register_next_step_handler(somevar, send_statistics)
     else:
         bot.send_message(message.chat.id, "Log in first!")
 
@@ -82,7 +82,7 @@ def login_to_db(message):
         else:
             bot.send_message(message.chat.id, "Login failure!")        
 
-def show_statistics(message):
+def send_statistics(message):
     vowels = ['a', 'e', 'i', 'o', 'u', 'y']
     consonants = ['b', 'c', 'd', 'f', 'g', 'j', 'k', 'l', 'm', 
     'n', 'p', 'q', 's', 't', 'v', 'x', 'z', 'h','r', 'w', 'y']
