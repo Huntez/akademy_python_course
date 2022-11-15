@@ -4,13 +4,13 @@ import connections
 import login_registration
 import sending
 
-authorization_check = False
 bot = telebot.TeleBot(connections.token)
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    authorization_check = login_registration.check_authorization(message.chat.id)
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    if not authorization_check:
+    if not authorization_check.authorization_check():
         button_login = telebot.types.KeyboardButton(text="login")
         button_reg = telebot.types.KeyboardButton(text="registration")
         keyboard.add(button_login, button_reg)
@@ -25,19 +25,20 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def command_checker(message):
+    authorization_check = login_registration.check_authorization(message.chat.id)
     if message.text == "login":
-        if not authorization_check:
+        if not authorization_check.authorization_check():
             bot.send_message(message.chat.id, "user, password : ")
             bot.register_next_step_handler(message, login_to_db)
         else:
             bot.send_message(message.chat.id, "You already authorized!")
     elif message.text == "registration":
-        if not authorization_check:
+        if not authorization_check.authorization_check():
             bot.send_message(message.chat.id, "user, password : ")
             bot.register_next_step_handler(message, registration)
         else:
             bot.send_message(message.chat.id, "You already authorized!")
-    elif authorization_check:
+    elif authorization_check.authorization_check():
         if message.text == "calc":
             bot.send_message(message.chat.id, "Enter a action : ")
             bot.register_next_step_handler(message, calc)
@@ -76,8 +77,8 @@ def login_to_db(message):
         bot.send_message(message.chat.id, "Wrong format!")
     else:
         if auth.login_to_db():
-            global authorization_check
-            authorization_check = True
+            authorization_check = login_registration.check_authorization(message.chat.id)
+            authorization_check.authorization_update()          
             bot.send_message(message.chat.id, "Login success!")
             start(message)
         else:
