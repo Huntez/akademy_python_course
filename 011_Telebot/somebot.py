@@ -11,48 +11,48 @@ bot = telebot.TeleBot(connections.token)
 def start(message):
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     if not authorization_check:
-        button_login = telebot.types.KeyboardButton(text="/login")
-        button_reg = telebot.types.KeyboardButton(text="/registration")
+        button_login = telebot.types.KeyboardButton(text="login")
+        button_reg = telebot.types.KeyboardButton(text="registration")
         keyboard.add(button_login, button_reg)
         bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)
     else:
-        button_calc = telebot.types.KeyboardButton(text="/calc")
-        button_hticket = telebot.types.KeyboardButton(text="/happy_ticket")
-        button_cwords = telebot.types.KeyboardButton(text="/count_words")
-        button_stats = telebot.types.KeyboardButton(text="/statistics")
+        button_calc = telebot.types.KeyboardButton(text="calc")
+        button_hticket = telebot.types.KeyboardButton(text="happy ticket")
+        button_cwords = telebot.types.KeyboardButton(text="count words")
+        button_stats = telebot.types.KeyboardButton(text="text statistics")
         keyboard.add(button_calc, button_hticket, button_cwords, button_stats)
         bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)                              
 
 @bot.message_handler(content_types=['text'])
-
 def command_checker(message):
-    if message.text == "/login":
+    if message.text == "login":
         if not authorization_check:
             bot.send_message(message.chat.id, "user, password : ")
             bot.register_next_step_handler(message, login_to_db)
         else:
             bot.send_message(message.chat.id, "You already authorized!")
-    elif message.text == "/registration":
+    elif message.text == "registration":
         if not authorization_check:
             bot.send_message(message.chat.id, "user, password : ")
             bot.register_next_step_handler(message, registration)
         else:
             bot.send_message(message.chat.id, "You already authorized!")
     elif authorization_check:
-        if message.text == "/calc":
+        if message.text == "calc":
             bot.send_message(message.chat.id, "Enter a action : ")
             bot.register_next_step_handler(message, calc)
-        if message.text == "/happy_ticket":
+        if message.text == "happy ticket":
             somevar = bot.send_message(message.chat.id, "Enter a ticket : ")
             bot.register_next_step_handler(somevar, happy_ticket)
-        if message.text == "/count_words":
+        if message.text == "count words":
             somevar = bot.send_message(message.chat.id, "Enter a text : ")
             bot.register_next_step_handler(somevar, count_words)
-        if message.text == "/statistics":
+        if message.text == "text statistics":
             somevar = bot.send_message(message.chat.id, "Enter a text : ")
             bot.register_next_step_handler(somevar, send_statistics)
     else:
         bot.send_message(message.chat.id, "Log in first!")
+        start(message)
 
 def registration(message):
     try:
@@ -79,6 +79,7 @@ def login_to_db(message):
             global authorization_check
             authorization_check = True
             bot.send_message(message.chat.id, "Login success!")
+            start(message)
         else:
             bot.send_message(message.chat.id, "Login failure!")        
 
@@ -119,32 +120,37 @@ def send_statistics(message):
     send_file.send_document("stats.txt")
 
 def count_words(message):
-    count = 0
-    for i in message.text.split(" "):
-        count += 1
-    bot.send_message(message.chat.id, "word count : " + str(count))    
+    bot.send_message(message.chat.id, "word count : " + str(len(message.text.split(" "))))    
 
 def happy_ticket(message):
-    ticket = message.text
-    first = [int(i) for i in ticket[:len(ticket)//2]]
-    second = [int(i) for i in ticket[(len(ticket)//2):]]
-    if sum(first) == sum(second):
-        bot.send_message(message.chat.id, "Ticket - " + ticket + " is happy!")
+    try:
+        ticket = message.text
+        first = [int(i) for i in ticket[:len(ticket)//2]]
+        second = [int(i) for i in ticket[(len(ticket)//2):]]
+    except ValueError:
+        bot.send_message(message.chat.id, "Wrong value!")
     else:
-        bot.send_message(message.chat.id, "Ticket - " + ticket + " is unhappy..")
+        if sum(first) == sum(second):
+            bot.send_message(message.chat.id, "Ticket - " + ticket + " is happy!")
+        else:
+            bot.send_message(message.chat.id, "Ticket - " + ticket + " is unhappy..")
 
 def calc(message):
-    alist = ["+", "-", "*", "/"]
-    svar = [i for i in message.text if i in alist]
-    ab = [i for i in message.text.replace(" ", "").split(svar[0])]
-    a, b = int(ab[0]), int(ab[1])
-    if svar[0] == "+":
-        bot.send_message(message.chat.id, str(a)+" + "+str(b)+" = "+str(a + b))
-    elif svar[0] == "-":
-        bot.send_message(message.chat.id, str(a)+" - "+str(b)+" = "+str(a - b))
-    elif svar[0] == "*":
-        bot.send_message(message.chat.id, str(a)+" * "+str(b)+" = "+str(a * b))
-    elif svar[0] == "/":
-        bot.send_message(message.chat.id, str(a)+" / "+str(b)+" = "+str(a / b))
+    try:
+        alist = ["+", "-", "*", "/"]
+        svar = [i for i in message.text if i in alist]
+        ab = [i for i in message.text.replace(" ", "").split(svar[0])]
+        a, b = int(ab[0]), int(ab[1])
+    except IndexError:
+        bot.send_message(message.chat.id, "Wrong format!")
+    else:
+        if svar[0] == "+":
+            bot.send_message(message.chat.id, str(a)+" + "+str(b)+" = "+str(a + b))
+        elif svar[0] == "-":
+            bot.send_message(message.chat.id, str(a)+" - "+str(b)+" = "+str(a - b))
+        elif svar[0] == "*":
+            bot.send_message(message.chat.id, str(a)+" * "+str(b)+" = "+str(a * b))
+        elif svar[0] == "/":
+            bot.send_message(message.chat.id, str(a)+" / "+str(b)+" = "+str(a / b))
 
 bot.infinity_polling()
