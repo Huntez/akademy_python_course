@@ -20,7 +20,9 @@ def start(message):
         button_hticket = telebot.types.KeyboardButton(text="happy ticket")
         button_cwords = telebot.types.KeyboardButton(text="count words")
         button_stats = telebot.types.KeyboardButton(text="text statistics")
-        keyboard.add(button_calc, button_hticket, button_cwords, button_stats)
+        button_logout = telebot.types.KeyboardButton(text="logout")
+        keyboard.add(button_calc, button_hticket, button_cwords, button_stats,
+        button_logout)
         bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)                              
 
 @bot.message_handler(content_types=['text'])
@@ -40,17 +42,19 @@ def command_checker(message):
             bot.send_message(message.chat.id, "You already authorized!")
     elif authorization_check.authorization_check():
         if message.text == "calc":
-            bot.send_message(message.chat.id, "Enter a action : ")
+            bot.send_message(message.chat.id, "Enter a action(3+2) : ")
             bot.register_next_step_handler(message, calc)
         if message.text == "happy ticket":
-            somevar = bot.send_message(message.chat.id, "Enter a ticket : ")
-            bot.register_next_step_handler(somevar, happy_ticket)
+            bot.send_message(message.chat.id, "Enter a ticket : ")
+            bot.register_next_step_handler(message, happy_ticket)
         if message.text == "count words":
-            somevar = bot.send_message(message.chat.id, "Enter a text : ")
-            bot.register_next_step_handler(somevar, count_words)
+            bot.send_message(message.chat.id, "Enter a text : ")
+            bot.register_next_step_handler(message, count_words)
         if message.text == "text statistics":
-            somevar = bot.send_message(message.chat.id, "Enter a text : ")
-            bot.register_next_step_handler(somevar, send_statistics)
+            bot.send_message(message.chat.id, "Enter a text : ")
+            bot.register_next_step_handler(message, send_statistics)
+        if message.text == "logout":
+            logout(message)
     else:
         bot.send_message(message.chat.id, "Log in first!")
         start(message)
@@ -68,6 +72,15 @@ def registration(message):
         else:
             bot.send_message(message.chat.id, "User already exist!")
 
+def logout(message):
+    try:
+        authorization_check = login_registration.check_authorization(message.chat.id)
+        authorization_check.authorization_update(False)
+    except Exception as error:
+        print(error)
+    else:
+        start(message)
+
 def login_to_db(message):
     try:
         user_and_password = message.text.replace(" ", "").split(",")
@@ -78,7 +91,7 @@ def login_to_db(message):
     else:
         if auth.login_to_db():
             authorization_check = login_registration.check_authorization(message.chat.id)
-            authorization_check.authorization_update()          
+            authorization_check.authorization_update(True)          
             bot.send_message(message.chat.id, "Login success!")
             start(message)
         else:
@@ -115,7 +128,6 @@ def send_statistics(message):
     file.write("Odd counter : " + str(odd_count))
     file.close()
 
-    # need rework
     send_file = sending.send_files(token=connections.token, 
     message_chat_id=message.chat.id)
     send_file.send_document("stats.txt")
@@ -142,7 +154,7 @@ def calc(message):
         svar = [i for i in message.text if i in alist]
         ab = [i for i in message.text.replace(" ", "").split(svar[0])]
         a, b = int(ab[0]), int(ab[1])
-    except IndexError:
+    except:
         bot.send_message(message.chat.id, "Wrong format!")
     else:
         if svar[0] == "+":

@@ -74,10 +74,10 @@ class check_authorization:
         finally:
             connection.commit()
 
-    def authorization_update(self):
+    def authorization_update(self, state):
         try:
             with connection.cursor() as cursor:
-                cursor.execute(f'''update message_chat_id set autorization_check = true
+                cursor.execute(f'''update message_chat_id set autorization_check = {state}
                 where id = "{self.message_chat_id}"''')
                 return True
         except Exception as error:
