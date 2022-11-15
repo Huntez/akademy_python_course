@@ -5,10 +5,12 @@ import login_registration
 import sending
 
 bot = telebot.TeleBot(connections.token)
+db_name = "Telebot"
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    authorization_check = login_registration.check_authorization(message.chat.id)
+    authorization_check = login_registration.check_authorization(message.chat.id,
+    db_name)
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     if not authorization_check.authorization_check():
         button_login = telebot.types.KeyboardButton(text="login")
@@ -27,7 +29,8 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def command_checker(message):
-    authorization_check = login_registration.check_authorization(message.chat.id)
+    authorization_check = login_registration.check_authorization(message.chat.id,
+    db_name)
     if message.text == "login":
         if not authorization_check.authorization_check():
             bot.send_message(message.chat.id, "user, password : ")
@@ -63,7 +66,7 @@ def registration(message):
     try:
         user_and_password = message.text.replace(" ", "").split(",")
         auth = login_registration.authorization(user_and_password[0], 
-        user_and_password[1])
+        user_and_password[1], db_name)
     except IndexError:
         bot.send_message(message.chat.id, "Wrong format!")
     else:
@@ -74,7 +77,8 @@ def registration(message):
 
 def logout(message):
     try:
-        authorization_check = login_registration.check_authorization(message.chat.id)
+        authorization_check = login_registration.check_authorization(message.chat.id, 
+        db_name)
         authorization_check.authorization_update(False)
     except Exception as error:
         print(error)
@@ -85,12 +89,13 @@ def login_to_db(message):
     try:
         user_and_password = message.text.replace(" ", "").split(",")
         auth = login_registration.authorization(user_and_password[0], 
-        user_and_password[1])
+        user_and_password[1], db_name)
     except IndexError:
         bot.send_message(message.chat.id, "Wrong format!")
     else:
         if auth.login_to_db():
-            authorization_check = login_registration.check_authorization(message.chat.id)
+            authorization_check = login_registration.check_authorization(message.chat.id,
+            db_name)
             authorization_check.authorization_update(True)          
             bot.send_message(message.chat.id, "Login success!")
             start(message)

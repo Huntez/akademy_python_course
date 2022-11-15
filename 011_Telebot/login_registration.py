@@ -1,25 +1,25 @@
 import connections
 import pymysql
 
-try:
+def connect_to_db(db_name):
     connection = pymysql.connect(
         host=connections.host,
         port=connections.port,
         user=connections.user,
         password=connections.password,
-        database="Telebot",
+        database=db_name,
         cursorclass=pymysql.cursors.DictCursor)
-except Exception as error:
-    print(error)
+    return connection
 
 class authorization:
-    def __init__(self, user, password):
+    def __init__(self, user, password, db_name):
         self.user = user
         self.password = password
+        self.connection = connect_to_db(db_name)
 
     def login_to_db(self):
         try:
-            with connection.cursor() as cursor:
+            with self.connection.cursor() as cursor:
                 cursor.execute(f'''select password from logins 
                 where user = "{self.user}"''')
                 if cursor.fetchall()[0]['password'] == self.password:
@@ -29,11 +29,11 @@ class authorization:
         except Exception as error:
             print(error)
         finally:
-            pass
+            self.connection.close()
         
     def registration_to_db(self):
         try:
-            with connection.cursor() as cursor:
+            with self.connection.cursor() as cursor:
                 cursor.execute(f'''select count(*) from logins
                 where user = "{self.user}"''')
                 if cursor.fetchall()[0]['count(*)'] == 0:
@@ -45,15 +45,17 @@ class authorization:
         except Exception as error:
             print(error)
         finally:
-            connection.commit()
+            self.connection.commit()
+            self.connection.close()
 
 class check_authorization:
-    def __init__(self, message_chat_id):
+    def __init__(self, message_chat_id, db_name):
         self.message_chat_id = message_chat_id
+        self.connection = connect_to_db(db_name)
         
     def check_message_chat_id_in_bd(self):
         try:
-            with connection.cursor() as cursor:
+            with self.connection.cursor() as cursor:
                 cursor.execute(f'''select count(*) from message_chat_id where
                 id = "{self.message_chat_id}"''')
                 if cursor.fetchall()[0]['count(*)'] == 1:
@@ -65,29 +67,29 @@ class check_authorization:
 
     def add_message_chat_id_to_db(self):
         try:
-            with connection.cursor() as cursor:
+            with self.connection.cursor() as cursor:
                 cursor.execute(f'''insert message_chat_id (id, autorization_check)
                 values ({self.message_chat_id}, false)''')
                 return True
         except Exception as error:
             print(error)
         finally:
-            connection.commit()
+            self.connection.commit()
 
     def authorization_update(self, state):
         try:
-            with connection.cursor() as cursor:
+            with self.connection.cursor() as cursor:
                 cursor.execute(f'''update message_chat_id set autorization_check = {state}
                 where id = "{self.message_chat_id}"''')
                 return True
         except Exception as error:
             print(error)
         finally:
-            connection.commit()
+            self.connection.commit()
     
     def authorization_check(self):
         try:
-            with connection.cursor() as cursor:
+            with self.connection.cursor() as cursor:
                 if self.check_message_chat_id_in_bd():
                     cursor.execute(f'''select autorization_check from 
                     message_chat_id where id = "{self.message_chat_id}"''')
@@ -101,6 +103,6 @@ class check_authorization:
         except Exception as error:
             print(error)
         finally:
-            connection.commit()
+            self.connection.commit()
     
     
