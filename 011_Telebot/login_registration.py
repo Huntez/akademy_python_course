@@ -86,6 +86,7 @@ class check_authorization:
             print(error)
         finally:
             self.connection.commit()
+            self.connection.close()
     
     def authorization_check(self):
         try:
@@ -104,5 +105,6 @@ class check_authorization:
             print(error)
         finally:
             self.connection.commit()
+            self.connection.close()
     
     
