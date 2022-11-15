@@ -2,13 +2,28 @@ import telebot
 import os.path
 import connections
 import login_registration
+import sending
 
 authorization_check = False
-
 bot = telebot.TeleBot(connections.token)
-@bot.message_handler(commands=['calc', 'happy_ticket', 
-                            'count_words', 'statistics', 
-                            'login', 'registration'])
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    if not authorization_check:
+        button_login = telebot.types.KeyboardButton(text="/login")
+        button_reg = telebot.types.KeyboardButton(text="/registration")
+        keyboard.add(button_login, button_reg)
+        bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)
+    else:
+        button_calc = telebot.types.KeyboardButton(text="/calc")
+        button_hticket = telebot.types.KeyboardButton(text="/happy_ticket")
+        button_cwords = telebot.types.KeyboardButton(text="/count_words")
+        button_stats = telebot.types.KeyboardButton(text="/statistics")
+        keyboard.add(button_calc, button_hticket, button_cwords, button_stats)
+        bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)                              
+
+@bot.message_handler(content_types=['text'])
 
 def command_checker(message):
     if message.text == "/login":
@@ -27,37 +42,45 @@ def command_checker(message):
         if message.text == "/calc":
             bot.send_message(message.chat.id, "Enter a action : ")
             bot.register_next_step_handler(message, calc)
-        elif message.text == "/happy_ticket":
+        if message.text == "/happy_ticket":
             somevar = bot.send_message(message.chat.id, "Enter a ticket : ")
             bot.register_next_step_handler(somevar, happy_ticket)
-        elif message.text == "/count_words":
+        if message.text == "/count_words":
             somevar = bot.send_message(message.chat.id, "Enter a text : ")
             bot.register_next_step_handler(somevar, count_words)
-        elif message.text == "/statistics":
+        if message.text == "/statistics":
             somevar = bot.send_message(message.chat.id, "Enter a text : ")
             bot.register_next_step_handler(somevar, show_statistics)
     else:
         bot.send_message(message.chat.id, "Log in first!")
 
 def registration(message):
-    user_and_password = message.text.replace(" ", "").split(",")
-    auth = login_registration.authorization(user_and_password[0], 
-    user_and_password[1])
-    if auth.registration_to_db():
-        bot.send_message(message.chat.id, "Account created!")
+    try:
+        user_and_password = message.text.replace(" ", "").split(",")
+        auth = login_registration.authorization(user_and_password[0], 
+        user_and_password[1])
+    except IndexError:
+        bot.send_message(message.chat.id, "Wrong format!")
     else:
-        bot.send_message(message.chat.id, "User already exist!")
+        if auth.registration_to_db():
+            bot.send_message(message.chat.id, "Account created!")
+        else:
+            bot.send_message(message.chat.id, "User already exist!")
 
 def login_to_db(message):
-    user_and_password = message.text.replace(" ", "").split(",")
-    auth = login_registration.authorization(user_and_password[0], 
-    user_and_password[1])
-    if auth.login_to_db():
-        global authorization_check
-        authorization_check = True
-        bot.send_message(message.chat.id, "Login success!")
+    try:
+        user_and_password = message.text.replace(" ", "").split(",")
+        auth = login_registration.authorization(user_and_password[0], 
+        user_and_password[1])
+    except IndexError:
+        bot.send_message(message.chat.id, "Wrong format!")
     else:
-        bot.send_message(message.chat.id, "Login failure!")        
+        if auth.login_to_db():
+            global authorization_check
+            authorization_check = True
+            bot.send_message(message.chat.id, "Login success!")
+        else:
+            bot.send_message(message.chat.id, "Login failure!")        
 
 def show_statistics(message):
     vowels = ['a', 'e', 'i', 'o', 'u', 'y']
@@ -90,9 +113,12 @@ def show_statistics(message):
     file.write("Odd counter : " + str(odd_count))
     file.close()
 
-    file = open("stats.txt", "rb")
-    bot.send_document(message.chat.id, file)
-    file.close()
+    # need rework
+    send_file = sending.send_files(token=connections.token, 
+    message_chat_id=message.chat.id)
+    
+    #send file
+    send_file.send_document("stats.txt")
 
 def count_words(message):
     count = 0
