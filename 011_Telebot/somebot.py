@@ -37,12 +37,14 @@ def command_checker(message):
             bot.register_next_step_handler(message, login_to_db)
         else:
             bot.send_message(message.chat.id, "You already authorized!")
+            start(message)
     elif message.text == "registration":
         if not authorization_check.authorization_check():
             bot.send_message(message.chat.id, "user, password : ")
             bot.register_next_step_handler(message, registration)
         else:
             bot.send_message(message.chat.id, "You already authorized!")
+            start(message)
     elif authorization_check.authorization_check():
         if message.text == "calc":
             bot.send_message(message.chat.id, "Enter a action(3+2) : ")
