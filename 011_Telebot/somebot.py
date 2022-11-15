@@ -116,8 +116,6 @@ def show_statistics(message):
     # need rework
     send_file = sending.send_files(token=connections.token, 
     message_chat_id=message.chat.id)
-    
-    #send file
     send_file.send_document("stats.txt")
 
 def count_words(message):
