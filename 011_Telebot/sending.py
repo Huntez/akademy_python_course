@@ -2,7 +2,7 @@ import telebot
 import os.path
 
 class send_files:
-    def __init__(self, token, message_chat_id, file_name):
+    def __init__(self, token, message_chat_id):
         self.bot = telebot.TeleBot(token)
         self.message_chat_id = message_chat_id
 
