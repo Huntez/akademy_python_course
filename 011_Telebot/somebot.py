@@ -12,7 +12,7 @@ bot = telebot.TeleBot(connections.token)
 
 def command_checker(message):
     if message.text == "/login":
-        if authorization_check:
+        if not authorization_check:
             bot.send_message(message.chat.id, "user, password : ")
             bot.register_next_step_handler(message, login_to_db)
         else:
