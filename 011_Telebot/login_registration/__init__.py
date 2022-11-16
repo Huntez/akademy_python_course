@@ -1,4 +1,3 @@
-import connections
 import pymysql
 from mysql_connect import connect_to_db
 

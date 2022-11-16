@@ -1,9 +1,11 @@
 import telebot
 import connections
 import login_registration
+import work_with_vg_db
 
-bot = telebot.TeleBot(connections.token)
 db_name = "Vegetables"
+bot = telebot.TeleBot(connections.token)
+vg_db = work_with_vg_db.work_with_vegetables_db(db_name)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -16,8 +18,10 @@ def start(message):
         keyboard.add(button_login, button_reg)
         bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)
     else:
+        button_sh_vg = telebot.types.KeyboardButton(text="show vegetables")
+        button_add_to_vg = telebot.types.KeyboardButton(text="add vegetable")
         button_logout = telebot.types.KeyboardButton(text="logout")
-        keyboard.add(button_logout)
+        keyboard.add(button_sh_vg, button_add_to_vg, button_logout)
         bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)                              
 
 @bot.message_handler(content_types=['text'])
@@ -39,6 +43,11 @@ def command_checker(message):
             bot.send_message(message.chat.id, "You already authorized!")
             start(message)
     elif authorization_check.authorization_check():
+        if message.text == "show vegetables":
+            show_vegetables(message)
+        if message.text == "add vegetable":
+            bot.send_message(message.chat.id, "name, cost : ")
+            bot.register_next_step_handler(message, add_to_db)
         if message.text == "logout":
             logout(message)
     else:
@@ -85,10 +94,22 @@ def login_to_db(message):
         else:
             bot.send_message(message.chat.id, "Login failure!")
 
-def show_vegetables():
+def show_vegetables(message):
+    try:
+        bot.send_message(message.chat.id, vg_db.select_without_filters())
+    except:
+        bot.send_message(message.chat.id, "Database empty, add something!")
+
+def show_vegetables_with_filters(message):
     pass
 
-def show_vegetables_with_filters():
-    pass
+def add_to_db(message):
+    try:
+        add_list = message.text.replace(" ", "").split(",")
+        vg_db.add_to_db(add_list[0], add_list[1])
+    except IndexError:
+        bot.send_message(message.chat.id, "Wrong format!")
+    else:
+        bot.send_message(message.chat.id, "Okay!")
             
 bot.infinity_polling()
