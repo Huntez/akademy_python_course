@@ -117,6 +117,7 @@ def show_vegetables_with_filters(message):
 
 def del_from_db(message):
     try:
+        vg_db.del_from_db(message.text)
         bot.send_message(message.chat.id, "Okay!")
     except Exception as error:
         bot.send_message(message.chat.id, error)
