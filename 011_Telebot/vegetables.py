@@ -83,6 +83,12 @@ def login_to_db(message):
             bot.send_message(message.chat.id, "Login success!")
             start(message)
         else:
-            bot.send_message(message.chat.id, "Login failure!")        
+            bot.send_message(message.chat.id, "Login failure!")
 
+def show_vegetables():
+    pass
+
+def show_vegetables_with_filters():
+    pass
+            
 bot.infinity_polling()

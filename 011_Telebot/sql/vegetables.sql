@@ -15,4 +15,11 @@ create table message_chat_id
 (
     id bigint primary key,
     autorization_check boolean
-); 
+);
+
+create table vegetables
+(
+    id int primary key auto_increment,
+    name varchar(30),
+    cost varchar(30)
+)
