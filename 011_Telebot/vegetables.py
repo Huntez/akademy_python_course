@@ -19,9 +19,12 @@ def start(message):
         bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)
     else:
         button_sh_vg = telebot.types.KeyboardButton(text="show vegetables")
+        button_sh_by_filter = telebot.types.KeyboardButton(text="show by filter")
         button_add_to_vg = telebot.types.KeyboardButton(text="add vegetable")
+        button_del_from_db = telebot.types.KeyboardButton(text="del by id")
         button_logout = telebot.types.KeyboardButton(text="logout")
-        keyboard.add(button_sh_vg, button_add_to_vg, button_logout)
+        keyboard.add(button_sh_vg, button_sh_by_filter, button_add_to_vg, 
+        button_del_from_db, button_logout)
         bot.send_message(message.chat.id, "Menu : ", reply_markup=keyboard)                              
 
 @bot.message_handler(content_types=['text'])
@@ -45,9 +48,15 @@ def command_checker(message):
     elif authorization_check.authorization_check():
         if message.text == "show vegetables":
             show_vegetables(message)
+        if message.text == "show by filter":
+            bot.send_message(message.chat.id, "filter : ")
+            bot.register_next_step_handler(message, show_vegetables_with_filters)
         if message.text == "add vegetable":
             bot.send_message(message.chat.id, "name, cost : ")
             bot.register_next_step_handler(message, add_to_db)
+        if message.text == "del by id":
+            bot.send_message(message.chat.id, "id: ")
+            bot.register_next_step_handler(message, del_from_db)
         if message.text == "logout":
             logout(message)
     else:
@@ -101,15 +110,25 @@ def show_vegetables(message):
         bot.send_message(message.chat.id, "Database empty, add something!")
 
 def show_vegetables_with_filters(message):
-    pass
+    try:
+        bot.send_message(message.chat.id, vg_db.select_with_filter(message.text))
+    except:
+        bot.send_message(message.chat.id, "Database empty, add something!")
+
+def del_from_db(message):
+    try:
+        bot.send_message(message.chat.id, "Okay!")
+    except Exception as error:
+        bot.send_message(message.chat.id, error)
 
 def add_to_db(message):
     try:
         add_list = message.text.replace(" ", "").split(",")
-        vg_db.add_to_db(add_list[0], add_list[1])
+        if vg_db.add_to_db(add_list[0], add_list[1]):
+            bot.send_message(message.chat.id, "Okay!")
+        else:
+            bot.send_message(message.chat.id, "Already in db!")
     except IndexError:
         bot.send_message(message.chat.id, "Wrong format!")
-    else:
-        bot.send_message(message.chat.id, "Okay!")
             
 bot.infinity_polling()

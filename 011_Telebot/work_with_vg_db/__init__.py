@@ -14,6 +14,15 @@ class work_with_vegetables_db:
         except Exception as error:
             print(error)
 
+    def select_with_filter(self, filter):
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(f'''select {filter} from vegetables''')
+                return '\n'.join([f'''{filter} : {i[f'{filter}']}'''
+                for i in cursor.fetchall()])
+        except Exception as error:
+            print(error)
+
     def add_to_db(self, name, cost):
         try:
             with self.connection.cursor() as cursor:
