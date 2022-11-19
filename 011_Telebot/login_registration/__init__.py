@@ -18,8 +18,6 @@ class authorization:
                     return False
         except Exception as error:
             print(error)
-        finally:
-            self.connection.close()
         
     def registration_to_db(self):
         try:
@@ -29,14 +27,12 @@ class authorization:
                 if cursor.fetchall()[0]['count(*)'] == 0:
                     cursor.execute(f'''insert logins (user, password)
                     values ("{self.user}", "{self.password}")''')
+                    self.connection.commit()
                     return True
                 else:
                     return False
         except Exception as error:
             print(error)
-        finally:
-            self.connection.commit()
-            self.connection.close()
 
 class check_authorization:
     def __init__(self, message_chat_id, db_name):
@@ -52,31 +48,26 @@ class check_authorization:
                     return True
         except Exception as error:
             print("Error")
-        finally:
-            pass
 
     def add_message_chat_id_to_db(self):
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(f'''insert message_chat_id (id, autorization_check)
                 values ({self.message_chat_id}, false)''')
+                self.connection.commit()
                 return True
         except Exception as error:
             print(error)
-        finally:
-            self.connection.commit()
 
     def authorization_update(self, state):
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(f'''update message_chat_id set autorization_check = {state}
                 where id = "{self.message_chat_id}"''')
+                self.connection.commit()
                 return True
         except Exception as error:
             print(error)
-        finally:
-            self.connection.commit()
-            self.connection.close()
     
     def authorization_check(self):
         try:
@@ -85,6 +76,7 @@ class check_authorization:
                     cursor.execute(f'''select autorization_check from 
                     message_chat_id where id = "{self.message_chat_id}"''')
                     if cursor.fetchall()[0]['autorization_check'] == 1:
+                        self.connection.commit()
                         return True
                     else:
                         return False
@@ -93,8 +85,3 @@ class check_authorization:
                     self.authorization_check()
         except Exception as error:
             print(error)
-        finally:
-            self.connection.commit()
-            self.connection.close()
-    
-    
