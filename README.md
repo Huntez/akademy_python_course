@@ -5,7 +5,7 @@ Testing on python __3.10.8__ with arch linux
 
 ## TODO
 
-- [ ] Making more readable
+- [x] Making more readable
 
 ## Module 001 - Introduction
 Basic python programs written with vscode
